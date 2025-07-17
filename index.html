@@ -7,7 +7,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
+    <!-- 
+      [수정 1] 기존 lucide.js를 삭제하고, React용 라이브러리인 lucide-react.js로 교체했습니다.
+    -->
+    <script src="https://unpkg.com/lucide-react@0.263.1/dist/lucide-react.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -379,12 +382,14 @@
 
     <script type="text/babel">
         const { useState, useEffect, useCallback, useMemo } = React;
+        
+        // [수정 2] 아이콘을 불러오는 객체를 lucide에서 LucideReact로 변경했습니다.
         const { 
             Camera, FileText, Calendar, CheckCircle, Circle, Upload, Download, 
             Search, Filter, Edit2, Plus, Save, X, Trash2, Share2, Link, 
             AlertCircle, CheckCircle2, BarChart3, TrendingUp, Clock, Users,
             Sparkles, Zap, Heart, Star
-        } = lucide;
+        } = LucideReact;
 
         const JewelryProductionTracker = () => {
             // 제조 공정 단계
