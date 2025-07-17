@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💎 Jewelry Production Tracker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.37);
+            --shadow-strong: 0 15px 35px rgba(31, 38, 135, 0.5);
+            --backdrop-blur: blur(20px);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, 
+                #667eea 0%, 
+                #764ba2 25%, 
+                #f093fb 50%, 
+                #f5576c 75%, 
+                #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 글래스모피즘 효과 */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--backdrop-blur);
+            -webkit-backdrop-filter: var(--backdrop-blur);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .glass-card-strong {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: var(--backdrop-blur);
+            -webkit-backdrop-filter: var(--backdrop-blur);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: var(--shadow-strong);
+        }
+
+        /* 네오모피즘 버튼 */
+        .neo-button {
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            box-shadow: 20px 20px 60px #d9d9d9, -20px -20px 60px #ffffff;
+            border: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .neo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 25px 25px 70px #d0d0d0, -25px -25px 70px #ffffff;
+        }
+
+        .neo-button:active {
+            transform: translateY(0);
+            box-shadow: inset 10px 10px 20px #d0d0d0, inset -10px -10px 20px #ffffff;
+        }
+
+        /* 그라데이션 버튼 */
+        .gradient-button {
+            background: var(--primary-gradient);
+            border: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .gradient-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .gradient-button:hover::before {
+            left: 100%;
+        }
+
+        .gradient-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* 진행률 원형 차트 개선 */
+        .progress-circle {
+            transform: rotate(-90deg);
+            filter: drop-shadow(0 4px 8px rgba(102, 126, 234, 0.3));
+        }
+
+        /* 마이크로 애니메이션 */
+        .micro-bounce {
+            animation: microBounce 2s infinite;
+        }
+
+        @keyframes microBounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-3px);
+            }
+            60% {
+                transform: translateY(-1px);
+            }
+        }
+
+        /* 부드러운 페이드 인 */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 스케일 호버 효과 */
+        .scale-hover {
+            transition: transform 0.3s ease;
+        }
+
+        .scale-hover:hover {
+            transform: scale(1.05);
+        }
+
+        /* 프로세스 아이콘 애니메이션 */
+        .process-icon {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .process-icon:hover {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        /* 입력 필드 개선 */
+        .modern-input {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            transition: all 0.3s ease;
+        }
+
+        .modern-input:focus {
+            background: rgba(255, 255, 255, 1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        /* 테이블 개선 */
+        .modern-table {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .table-row {
+            transition: all 0.2s ease;
+        }
+
+        .table-row:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: scale(1.01);
+        }
+
+        /* 통계 카드 개선 */
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--backdrop-blur);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary-gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        /* 알림 개선 */
+        .notification {
+            backdrop-filter: blur(20px);
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* 로딩 애니메이션 개선 */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 모달 개선 */
+        .modal-backdrop {
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            animation: modalSlideUp 0.3s ease;
+        }
+
+        @keyframes modalSlideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* 반응형 개선 */
+        @media (max-width: 768px) {
+            .glass-card {
+                margin: 0.5rem;
+            }
+            
+            .stat-card {
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* 스크롤바 스타일링 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-gradient);
+        }
+
+        /* 체크박스 커스텀 */
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .custom-checkbox:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* 프로세스 완료 애니메이션 */
+        .process-complete {
+            animation: completeSuccess 0.6s ease;
+        }
+
+        @keyframes completeSuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        /* 텍스트 그라데이션 */
+        .gradient-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 플로팅 액션 버튼 */
+        .floating-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .floating-button:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback, useMemo } = React;
+        const { 
+            Camera, FileText, Calendar, CheckCircle, Circle, Upload, Download, 
+            Search, Filter, Edit2, Plus, Save, X, Trash2, Share2, Link, 
+            AlertCircle, CheckCircle2, BarChart3, TrendingUp, Clock, Users,
+            Sparkles, Zap, Heart, Star
+        } = lucide;
+
+        const JewelryProductionTracker = () => {
+            // 제조 공정 단계
+            const processes = [
+                { id: 'cad', name: 'CAD\n캐드', icon: '🖥️', fullName: 'Computer-Aided Design', color: '#667eea' },
+                { id: 'wax_printing', name: 'Wax Printing\n왁스프린팅', icon: '🖨️', fullName: 'Wax 3D Printing', color: '#764ba2' },
+                { id: 'casting', name: 'Casting\n캐스팅', icon: '🔥', fullName: 'Metal Casting', color: '#f093fb' },
+                { id: 'filing', name: 'Filing\n파일링', icon: '🔧', fullName: 'Metal Filing', color: '#f5576c' },
+                { id: 'stone_setting', name: 'Stone Setting\n스톤셋팅', icon: '💎', fullName: 'Gemstone Setting', color: '#4facfe' },
+                { id: 'engraving', name: 'Engraving\n각인', icon: '✏️', fullName: 'Laser Engraving', color: '#00f2fe' },
+                { id: 'polishing', name: 'Polishing\n폴리싱', icon: '✨', fullName: 'Surface Polishing', color: '#43e97b' },
+                { id: 'qc', name: 'QC\n품질검수', icon: '🔍', fullName: 'Quality Control', color: '#38f9d7' }
+            ];
+
+            // 초기 제품 데이터
+            const initialProducts = [
+                { id: 'PROD001', name: 'JY-01E', category: 'earring', material: 'Silver 925', createdAt: new Date().toISOString() },
+                { id: 'PROD002', name: 'JY-02E', category: 'earring', material: '14K Gold', createdAt: new Date().toISOString() },
+                { id: 'PROD003', name: 'JY-03E', category: 'earring', material: 'Platinum', createdAt: new Date().toISOString() },
+                { id: 'PROD004', name: 'JY-01N', category: 'necklace', material: '18K Gold', createdAt: new Date().toISOString() },
+                { id: 'PROD005', name: 'JY-02N', category: 'necklace', material: 'Silver 925', createdAt: new Date().toISOString() }
+            ];
+
+            // 상태 관리 - 향상된 로컬 저장소 지원
+            const [products, setProducts] = useState(() => {
+                try {
+                    const saved = localStorage.getItem('jewelry_products_v2');
+                    const parsed = saved ? JSON.parse(saved) : null;
+                    if (parsed && Array.isArray(parsed) && parsed.length > 0) {
+                        return parsed;
+                    }
+                } catch (error) {
+                    console.warn('Failed to load products from localStorage:', error);
+                }
+                return initialProducts;
+            });
+            
+            const [productionData, setProductionData] = useState(() => {
+                try {
+                    const saved = localStorage.getItem('jewelry_production_data_v2');
+                    return saved ? JSON.parse(saved) : {};
+                } catch (error) {
+                    console.warn('Failed to load production data from localStorage:', error);
+                    return {};
+                }
+            });
+
+            const [searchTerm, setSearchTerm] = useState('');
+            const [filterCategory, setFilterCategory] = useState('all');
+            const [showAddModal, setShowAddModal] = useState(false);
+            const [editingProduct, setEditingProduct] = useState(null);
+            const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
+            const [showImportModal, setShowImportModal] = useState(false);
+            const [showShareModal, setShowShareModal] = useState(false);
+            const [shareUrl, setShareUrl] = useState('');
+            const [notification, setNotification] = useState(null);
+            const [isLoading, setIsLoading] = useState(false);
+            const [autoSaveStatus, setAutoSaveStatus] = useState('saved');
+            const [lastSaved, setLastSaved] = useState(new Date());
+            const [formData, setFormData] = useState({
+                name: '',
+                category: 'earring',
+                material: ''
+            });
+
+            // 향상된 자동 저장 시스템
+            const saveToLocalStorage = useCallback((productsData, productionDataState) => {
+                try {
+                    setAutoSaveStatus('saving');
+                    localStorage.setItem('jewelry_products_v2', JSON.stringify(productsData));
+                    localStorage.setItem('jewelry_production_data_v2', JSON.stringify(productionDataState));
+                    localStorage.setItem('jewelry_last_saved', new Date().toISOString());
+                    setLastSaved(new Date());
+                    setAutoSaveStatus('saved');
+                    
+                    // 자동 저장 성공 표시
+                    setTimeout(() => {
+                        if (document.querySelector('.auto-save-indicator')) {
+                            document.querySelector('.auto-save-indicator').classList.add('animate-pulse');
+                            setTimeout(() => {
+                                document.querySelector('.auto-save-indicator')?.classList.remove('animate-pulse');
+                            }, 1000);
+                        }
+                    }, 100);
+                } catch (error) {
+                    console.error('Failed to save to localStorage:', error);
+                    setAutoSaveStatus('error');
+                    showNotification('Auto-save failed. Please export your data as backup. / 자동 저장 실패. 데이터를 백업으로 내보내주세요.', 'error');
+                }
+            }, []);
+
+            // 디바운스된 자동 저장
+            useEffect(() => {
+                const timeoutId = setTimeout(() => {
+                    if (products.length > 0) {
+                        saveToLocalStorage(products, productionData);
+                    }
+                }, 1000); // 1초 대기 후 저장
+
+                return () => clearTimeout(timeoutId);
+            }, [products, productionData, saveToLocalStorage]);
+
+            // 브라우저 탭 종료 전 확인
+            useEffect(() => {
+                const handleBeforeUnload = (e) => {
+                    if (autoSaveStatus === 'saving') {
+                        e.preventDefault();
+                        e.returnValue = 'Data is still being saved. Are you sure you want to leave?';
+                    }
+                };
+
+                window.addEventListener('beforeunload', handleBeforeUnload);
+                return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+            }, [autoSaveStatus]);
+
+            // 알림 표시 함수 - 향상된 애니메이션
+            const showNotification = useCallback((message, type = 'success') => {
+                setNotification({ message, type, id: Date.now() });
+                setTimeout(() => setNotification(null), 4000);
+            }, []);
+
+            // URL에서 데이터 로드하기
+            useEffect(() => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const sharedData = urlParams.get('d');
+                
+                if (sharedData) {
+                    setIsLoading(true);
+                    try {
+                        const compactData = JSON.parse(atob(sharedData));
+                        
+                        if (compactData.products && compactData.productionData) {
+                            const restoredProducts = compactData.products.map(p => ({
+                                id: p.i,
+                                name: p.n,
+                                category: p.c,
+                                material: p.m,
+                                createdAt: new Date().toISOString()
+                            }));
+                            
+                            const restoredProductionData = {};
+                            Object.keys(compactData.productionData).forEach(productId => {
+                                const compactProdData = compactData.productionData[productId];
+                                if (compactProdData.p) {
+                                    restoredProductionData[productId] = {
+                                        processes: {}
+                                    };
+                                    
+                                    Object.keys(compactProdData.p).forEach(processId => {
+                                        const compactProcess = compactProdData.p[processId];
+                                        restoredProductionData[productId].processes[processId] = {
+                                            completed: compactProcess.c === 1,
+                                            completedDate: compactProcess.d || '',
+                                            lastUpdated: new Date().toISOString()
+                                        };
+                                    });
+                                }
+                            });
+                            
+                            setProducts(restoredProducts);
+                            setProductionData(restoredProductionData);
+                            
+                            window.history.replaceState({}, document.title, window.location.pathname);
+                            
+                            showNotification('🎉 Shared data loaded successfully! Welcome back! / 공유된 데이터를 성공적으로 불러왔습니다!');
+                        }
+                    } catch (error) {
+                        console.error('Failed to load shared data:', error);
+                        showNotification('❌ Failed to load shared data / 공유된 데이터 불러오기 실패', 'error');
+                    } finally {
+                        setIsLoading(false);
+                    }
+                }
+            }, [showNotification]);
+
+            // 자동 URL 업데이트
+            useEffect(() => {
+                const updateUrl = () => {
+                    try {
+                        const compactData = {
+                            products: products.map(p => ({
+                                i: p.id,
+                                n: p.name,
+                                c: p.category,
+                                m: p.material
+                            })),
+                            productionData: Object.keys(productionData).reduce((acc, productId) => {
+                                const data = productionData[productId];
+                                if (data && data.processes) {
+                                    const processData = Object.keys(data.processes).reduce((procAcc, processId) => {
+                                        if (data.processes[processId] && data.processes[processId].completed) {
+                                            procAcc[processId] = {
+                                                c: 1,
+                                                d: data.processes[processId].completedDate || ''
+                                            };
+                                        }
+                                        return procAcc;
+                                    }, {});
+                                    
+                                    if (Object.keys(processData).length > 0) {
+                                        acc[productId] = { p: processData };
+                                    }
+                                }
+                                return acc;
+                            }, {})
+                        };
+
+                        const dataString = JSON.stringify(compactData);
+                        
+                        if (dataString.length < 1500) {
+                            const encodedData = btoa(dataString);
+                            const newUrl = `${window.location.origin}${window.location.pathname}?d=${encodedData}`;
+                            window.history.replaceState({}, document.title, newUrl);
+                        }
+                    } catch (error) {
+                        console.error('URL update failed:', error);
+                    }
+                };
+
+                const timeoutId = setTimeout(updateUrl, 500);
+                return () => clearTimeout(timeoutId);
+            }, [products, productionData]);
+
+            // 진행률 계산
+            const calculateProgress = useCallback((productId) => {
+                const data = productionData[productId];
+                if (!data) return 0;
+                
+                const completedCount = processes.reduce((count, process) => {
+                    return data.processes?.[process.id]?.completed ? count + 1 : count;
+                }, 0);
+                
+                return Math.round((completedCount / processes.length) * 100);
+            }, [productionData, processes]);
+
+            // 필터링된 제품 목록
+            const filteredProducts = useMemo(() => {
+                return products.filter(product => {
+                    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                         product.id.toLowerCase().includes(searchTerm.toLowerCase());
+                    const matchesCategory = filterCategory === 'all' || product.category === filterCategory;
+                    return matchesSearch && matchesCategory;
+                });
+            }, [products, searchTerm, filterCategory]);
+
+            // 카테고리 목록
+            const categories = useMemo(() => {
+                return ['all', ...new Set(products.map(p => p.category))];
+            }, [products]);
+
+            // 통계 데이터
+            const statistics = useMemo(() => {
+                const totalProducts = products.length;
+                const completedProducts = products.filter(p => calculateProgress(p.id) === 100).length;
+                const inProgressProducts = products.filter(p => {
+                    const progress = calculateProgress(p.id);
+                    return progress > 0 && progress < 100;
+                }).length;
+                const averageProgress = totalProducts > 0 
+                    ? Math.round(products.reduce((sum, p) => sum + calculateProgress(p.id), 0) / totalProducts)
+                    : 0;
+
+                return {
+                    totalProducts,
+                    completedProducts,
+                    inProgressProducts,
+                    averageProgress
+                };
+            }, [products, calculateProgress]);
+
+            // URL 공유 기능
+            const generateShareUrl = useCallback(() => {
+                const currentUrl = window.location.href;
+                setShareUrl(currentUrl);
+                setShowShareModal(true);
+                showNotification('🚀 Share URL generated! Copy and share with your team! / 공유 URL이 생성되었습니다!');
+            }, [showNotification]);
+
+            // 클립보드 복사
+            const copyToClipboard = useCallback(async (text) => {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    showNotification('📋 URL copied to clipboard! Ready to share! / URL이 클립보드에 복사되었습니다!');
+                } catch (error) {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    textArea.style.position = 'fixed';
+                    textArea.style.opacity = '0';
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showNotification('📋 URL copied! Ready to share! / URL이 복사되었습니다!');
+                }
+            }, [showNotification]);
+
+            // 데이터 내보내기
+            const exportData = useCallback(async () => {
+                try {
+                    const exportData = { 
+                        products, 
+                        productionData,
+                        exportedAt: new Date().toISOString(),
+                        version: "2.0",
+                        metadata: {
+                            totalProducts: products.length,
+                            lastSaved: lastSaved.toISOString()
+                        }
+                    };
+                    const dataStr = JSON.stringify(exportData, null, 2);
+                    
+                    await navigator.clipboard.writeText(dataStr);
+                    showNotification('💾 JSON data copied to clipboard! Save as .json file for backup / JSON 데이터가 클립보드에 복사되었습니다!');
+                } catch (error) {
+                    showNotification('❌ Failed to export data / 데이터 내보내기에 실패했습니다', 'error');
+                }
+            }, [products, productionData, lastSaved, showNotification]);
+
+            // 공정 상태 업데이트 - 향상된 피드백
+            const updateProcessStatus = useCallback((productId, processId, field, value) => {
+                setProductionData(prev => ({
+                    ...prev,
+                    [productId]: {
+                        ...prev[productId],
+                        processes: {
+                            ...prev[productId]?.processes,
+                            [processId]: {
+                                ...prev[productId]?.processes?.[processId],
+                                [field]: value,
+                                lastUpdated: new Date().toISOString()
+                            }
+                        }
+                    }
+                }));
+
+                if (field === 'completed' && value) {
+                    const processName = processes.find(p => p.id === processId)?.fullName || processId;
+                    showNotification(`✅ ${processName} completed! Great progress! / ${processName} 공정이 완료되었습니다!`);
+                    
+                    // 완료 사운드 효과 (선택적)
+                    try {
+                        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+Dxu2oiCSqSy+/XgDkJG2m98N6dIwU+lMz3uWEeCXM=');
+                        audio.volume = 0.1;
+                        audio.play().catch(() => {}); // 조용히 실패 처리
+                    } catch (e) {}
+                }
+            }, [processes, showNotification]);
+
+            // 새 제품 추가
+            const addNewProduct = useCallback(() => {
+                if (!formData.name.trim()) {
+                    showNotification('❗ Product name is required / 제품명을 입력해주세요', 'error');
+                    return;
+                }
+                
+                const newProduct = {
+                    id: `PROD${String(products.length + 1).padStart(3, '0')}`,
+                    name: formData.name.trim(),
+                    category: formData.category,
+                    material: formData.material.trim() || 'Unknown',
+                    createdAt: new Date().toISOString()
+                };
+                
+                setProducts(prev => [...prev, newProduct]);
+                setFormData({ name: '', category: 'earring', material: '' });
+                setShowAddModal(false);
+                showNotification(`🎉 Product "${newProduct.name}" added successfully! / 제품이 성공적으로 추가되었습니다!`);
+            }, [formData, products.length, showNotification]);
+
+            // 제품 편집
+            const editProduct = useCallback((product) => {
+                setEditingProduct(product.id);
+                setFormData({
+                    name: product.name,
+                    category: product.category,
+                    material: product.material
+                });
+                setShowAddModal(true);
+            }, []);
+
+            // 제품 업데이트
+            const updateProduct = useCallback(() => {
+                if (!formData.name.trim()) {
+                    showNotification('❗ Product name is required / 제품명을 입력해주세요', 'error');
+                    return;
+                }
+                
+                setProducts(prev => prev.map(product => 
+                    product.id === editingProduct 
+                        ? {
+                            ...product,
+                            name: formData.name.trim(),
+                            category: formData.category,
+                            material: formData.material.trim() || 'Unknown',
+                            updatedAt: new Date().toISOString()
+                          }
+                        : product
+                ));
+                
+                setFormData({ name: '', category: 'earring', material: '' });
+                setShowAddModal(false);
+                setEditingProduct(null);
+                showNotification('✅ Product updated successfully! / 제품이 성공적으로 수정되었습니다!');
+            }, [formData, editingProduct, showNotification]);
+
+            // 제품 삭제
+            const executeDeleteProduct = useCallback((productId) => {
+                const product = products.find(p => p.id === productId);
+                setProducts(prev => prev.filter(product => product.id !== productId));
+                setProductionData(prev => {
+                    const newData = { ...prev };
+                    delete newData[productId];
+                    return newData;
+                });
+                setShowDeleteConfirm(null);
+                showNotification(`🗑️ Product "${product?.name}" deleted successfully / 제품이 성공적으로 삭제되었습니다`);
+            }, [products, showNotification]);
+
+            // 진행률에 따른 색상 계산
+            const getProgressColor = (progress) => {
+                if (progress === 0) return '#e2e8f0';
+                if (progress < 25) return '#f87171';
+                if (progress < 50) return '#fb923c';
+                if (progress < 75) return '#fbbf24';
+                if (progress < 100) return '#34d399';
+                return '#10b981';
+            };
+
+            return React.createElement('div', { className: "min-h-screen p-4 fade-in" },
+                React.createElement('div', { className: "max-w-7xl mx-auto" },
+                    // 로딩 인디케이터
+                    isLoading && React.createElement('div', { className: "fixed inset-0 bg-black bg-opacity-50 modal-backdrop flex items-center justify-center z-50" },
+                        React.createElement('div', { className: "glass-card-strong rounded-2xl p-8 flex flex-col items-center gap-4" },
+                            React.createElement('div', { className: "loading-spinner" }),
+                            React.createElement('span', { className: "text-white font-medium" }, "Loading your workspace... / 작업공간 로딩 중...")
+                        )
+                    ),
+
+                    // 알림 - 향상된 디자인
+                    notification && React.createElement('div', { 
+                        className: `notification fixed top-6 right-6 z-50 p-4 rounded-2xl shadow-2xl max-w-md ${
+                            notification.type === 'error' 
+                                ? 'bg-gradient-to-r from-red-500 to-red-600 text-white' 
+                                : 'bg-gradient-to-r from-green-500 to-green-600 text-white'
+                        }`
+                    },
+                        React.createElement('div', { className: "flex items-start gap-3" },
+                            React.createElement(notification.type === 'error' ? AlertCircle : CheckCircle2, { className: "w-6 h-6 flex-shrink-0 mt-0.5" }),
+                            React.createElement('div', { className: "flex-1" },
+                                React.createElement('p', { className: "font-medium leading-relaxed" }, notification.message)
+                            )
+                        )
+                    ),
+
+                    // 헤더 - 현대적 디자인
+                    React.createElement('div', { className: "glass-card-strong rounded-3xl p-8 mb-8 fade-in" },
+                        React.createElement('div', { className: "flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6" },
+                            React.createElement('div', { className: "flex items-center gap-4" },
+                                React.createElement('div', { className: "w-16 h-16 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-2xl micro-bounce" },
+                                    "💎"
+                                ),
+                                React.createElement('div', null,
+                                    React.createElement('h1', { className: "text-4xl font-bold text-white mb-2 gradient-text" },
+                                        "Jewelry Production Tracker"
+                                    ),
+                                    React.createElement('p', { className: "text-white/80 text-lg" }, 
+                                        "Modern Production Management System / 현대적 작업 진행서 관리 시스템"
+                                    )
+                                )
+                            ),
+                            
+                            React.createElement('div', { className: "flex flex-col sm:flex-row gap-3" },
+                                // 검색
+                                React.createElement('div', { className: "relative" },
+                                    React.createElement(Search, { className: "absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" }),
+                                    React.createElement('input', {
+                                        type: "text",
+                                        placeholder: "Search products... / 제품 검색...",
+                                        value: searchTerm,
+                                        onChange: (e) => setSearchTerm(e.target.value),
+                                        className: "modern-input pl-12 pr-4 py-3 rounded-xl border-0 focus:ring-2 focus:ring-purple-500 w-full sm:w-64"
+                                    })
+                                ),
+                                
+                                // 카테고리 필터
+                                React.createElement('div', { className: "relative" },
+                                    React.createElement(Filter, { className: "absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" }),
+                                    React.createElement('select', {
+                                        value: filterCategory,
+                                        onChange: (e) => setFilterCategory(e.target.value),
+                                        className: "modern-input pl-12 pr-10 py-3 rounded-xl border-0 focus:ring-2 focus:ring-purple-500 appearance-none bg-white/90"
+                                    },
+                                        categories.map(cat => 
+                                            React.createElement('option', { key: cat, value: cat },
+                                                cat === 'all' ? 'All Categories / 전체' : 
+                                                cat === 'earring' ? 'Earring / 귀걸이' :
+                                                cat === 'necklace' ? 'Necklace / 목걸이' :
+                                                cat === 'bracelet' ? 'Bracelet / 팔찌' :
+                                                cat === 'ring' ? 'Ring / 반지' : cat
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    ),
+
+                    // 액션 버튼 바
+                    React.createElement('div', { className: "glass-card rounded-2xl p-4 mb-8 fade-in" },
+                        React.createElement('div', { className: "flex flex-wrap gap-3 justify-center lg:justify-start" },
+                            React.createElement('button', {
+                                onClick: exportData,
+                                className: "gradient-button flex items-center gap-2 px-6 py-3 text-white rounded-xl font-medium transition-all hover:shadow-lg scale-hover"
+                            },
+                                React.createElement(Download, { className: "w-5 h-5" }),
+                                "Export JSON"
+                            ),
+
+                            React.createElement('button', {
+                                onClick: generateShareUrl,
+                                className: "gradient-button flex items-center gap-2 px-6 py-3 text-white rounded-xl font-medium transition-all hover:shadow-lg scale-hover"
+                            },
+                                React.createElement(Share2, { className: "w-5 h-5" }),
+                                "Share URL"
+                            ),
+
+                            React.createElement('button', {
+                                onClick: () => setShowAddModal(true),
+                                className: "gradient-button flex items-center gap-2 px-6 py-3 text-white rounded-xl font-medium transition-all hover:shadow-lg scale-hover"
+                            },
+                                React.createElement(Plus, { className: "w-5 h-5" }),
+                                "Add Product"
+                            )
+                        )
+                    ),
+
+                    // 자동 저장 상태 표시
+                    React.createElement('div', { className: "glass-card rounded-2xl p-4 mb-8 fade-in" },
+                        React.createElement('div', { className: "flex items-center justify-between" },
+                            React.createElement('div', { className: "flex items-center gap-3" },
+                                React.createElement('div', { 
+                                    className: `auto-save-indicator w-3 h-3 rounded-full ${
+                                        autoSaveStatus === 'saved' ? 'bg-green-400' :
+                                        autoSaveStatus === 'saving' ? 'bg-yellow-400 animate-pulse' :
+                                        'bg-red-400'
+                                    }`
+                                }),
+                                React.createElement('span', { className: "text-white/80 font-medium" },
+                                    autoSaveStatus === 'saved' ? '✅ Auto-saved to browser storage' :
+                                    autoSaveStatus === 'saving' ? '💾 Saving...' :
+                                    '❌ Save failed'
+                                )
+                            ),
+                            React.createElement('span', { className: "text-white/60 text-sm" },
+                                `Last saved: ${lastSaved.toLocaleTimeString()}`
+                            )
+                        )
+                    ),
+
+                    // 통계 섹션 - 개선된 디자인
+                    React.createElement('div', { className: "mb-8" },
+                        React.createElement('h2', { className: "text-2xl font-bold text-white mb-6 flex items-center gap-3" },
+                            React.createElement(BarChart3, { className: "w-8 h-8" }),
+                            "📊 Production Statistics / 생산 현황 통계"
+                        ),
+                        
+                        React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6" },
+                            React.createElement('div', { className: "stat-card rounded-2xl p-6 scale-hover" },
+                                React.createElement('div', { className: "flex items-center justify-between mb-4" },
+                                    React.createElement('div', { className: "w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center" },
+                                        React.createElement(Users, { className: "w-6 h-6 text-white" })
+                                    ),
+                                    React.createElement('span', { className: "text-3xl font-bold text-white" }, statistics.totalProducts)
+                                ),
+                                React.createElement('p', { className: "text-white/80 font-medium" }, "Total Products"),
+                                React.createElement('p', { className: "text-white/60 text-sm" }, "총 제품 수")
+                            ),
+                            
+                            React.createElement('div', { className: "stat-card rounded-2xl p-6 scale-hover" },
+                                React.createElement('div', { className: "flex items-center justify-between mb-4" },
+                                    React.createElement('div', { className: "w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center" },
+                                        React.createElement(CheckCircle2, { className: "w-6 h-6 text-white" })
+                                    ),
+                                    React.createElement('span', { className: "text-3xl font-bold text-white" }, statistics.completedProducts)
+                                ),
+                                React.createElement('p', { className: "text-white/80 font-medium" }, "Completed"),
+                                React.createElement('p', { className: "text-white/60 text-sm" }, "완료된 제품")
+                            ),
+                            
+                            React.createElement('div', { className: "stat-card rounded-2xl p-6 scale-hover" },
+                                React.createElement('div', { className: "flex items-center justify-between mb-4" },
+                                    React.createElement('div', { className: "w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center" },
+                                        React.createElement(Clock, { className: "w-6 h-6 text-white" })
+                                    ),
+                                    React.createElement('span', { className: "text-3xl font-bold text-white" }, statistics.inProgressProducts)
+                                ),
+                                React.createElement('p', { className: "text-white/80 font-medium" }, "In Progress"),
+                                React.createElement('p', { className: "text-white/60 text-sm" }, "진행 중인 제품")
+                            ),
+                            
+                            React.createElement('div', { className: "stat-card rounded-2xl p-6 scale-hover" },
+                                React.createElement('div', { className: "flex items-center justify-between mb-4" },
+                                    React.createElement('div', { className: "w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center" },
+                                        React.createElement(TrendingUp, { className: "w-6 h-6 text-white" })
+                                    ),
+                                    React.createElement('span', { className: "text-3xl font-bold text-white" }, `${statistics.averageProgress}%`)
+                                ),
+                                React.createElement('p', { className: "text-white/80 font-medium" }, "Average Progress"),
+                                React.createElement('p', { className: "text-white/60 text-sm" }, "평균 진행률")
+                            )
+                        )
+                    ),
+
+                    // 메인 테이블 - 완전히 새로운 디자인
+                    React.createElement('div', { className: "modern-table rounded-3xl overflow-hidden shadow-2xl fade-in" },
+                        React.createElement('div', { className: "overflow-x-auto" },
+                            React.createElement('table', { className: "w-full" },
+                                // 테이블 헤더
+                                React.createElement('thead', { className: "bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 text-white" },
+                                    React.createElement('tr', null,
+                                        React.createElement('th', { className: "px-8 py-6 text-left font-bold text-lg min-w-80" }, 
+                                            "💎 Product Information"
+                                        ),
+                                        React.createElement('th', { className: "px-6 py-6 text-center font-bold text-lg" }, 
+                                            "📊 Progress"
+                                        ),
+                                        ...processes.map(process => 
+                                            React.createElement('th', { key: process.id, className: "px-4 py-6 text-center font-bold min-w-32" },
+                                                React.createElement('div', { className: "flex flex-col items-center gap-2 process-icon" },
+                                                    React.createElement('span', { className: "text-2xl" }, process.icon),
+                                                    React.createElement('span', { 
+                                                        className: "text-xs whitespace-pre-line text-center leading-tight font-medium" 
+                                                    }, process.name)
+                                                )
+                                            )
+                                        ),
+                                        React.createElement('th', { className: "px-6 py-6 text-center font-bold text-lg" }, 
+                                            "⚡ Actions"
+                                        )
+                                    )
+                                ),
+
+                                // 테이블 바디
+                                React.createElement('tbody', { className: "bg-white/95" },
+                                    filteredProducts.map((product, index) => {
+                                        const progress = calculateProgress(product.id);
+                                        const data = productionData[product.id];
+                                        const progressColor = getProgressColor(progress);
+                                        
+                                        return React.createElement('tr', { 
+                                            key: product.id, 
+                                            className: "table-row border-b border-gray-100 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50"
+                                        },
+                                            // 제품 정보
+                                            React.createElement('td', { className: "px-8 py-6" },
+                                                React.createElement('div', { className: "flex items-center gap-4" },
+                                                    React.createElement('div', { 
+                                                        className: "w-16 h-16 rounded-2xl bg-gradient-to-r from-purple-400 to-blue-400 flex items-center justify-center text-white font-bold text-lg" 
+                                                    },
+                                                        product.name.substring(0, 2).toUpperCase()
+                                                    ),
+                                                    React.createElement('div', { className: "min-w-0 flex-1" },
+                                                        React.createElement('h3', { className: "font-bold text-gray-800 text-xl mb-2" },
+                                                            product.name
+                                                        ),
+                                                        React.createElement('div', { className: "flex flex-wrap items-center gap-2" },
+                                                            React.createElement('span', { className: "text-xs text-gray-600 bg-gray-100 px-3 py-1 rounded-full font-medium" },
+                                                                product.id
+                                                            ),
+                                                            React.createElement('span', { className: "text-xs bg-gradient-to-r from-purple-100 to-purple-200 text-purple-700 px-3 py-1 rounded-full font-medium" },
+                                                                product.category
+                                                            ),
+                                                            React.createElement('span', { className: "text-xs bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 px-3 py-1 rounded-full font-medium" },
+                                                                product.material
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            ),
+
+                                            // 진행률 - 향상된 원형 차트
+                                            React.createElement('td', { className: "px-6 py-6 text-center" },
+                                                React.createElement('div', { className: "flex flex-col items-center gap-3" },
+                                                    React.createElement('div', { className: "relative w-20 h-20" },
+                                                        React.createElement('svg', { 
+                                                            className: "progress-circle w-20 h-20", 
+                                                            viewBox: "0 0 36 36" 
+                                                        },
+                                                            React.createElement('path', {
+                                                                d: "M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831",
+                                                                fill: "none",
+                                                                stroke: "#e5e7eb",
+                                                                strokeWidth: "2"
+                                                            }),
+                                                            React.createElement('path', {
+                                                                d: "M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831",
+                                                                fill: "none",
+                                                                stroke: progressColor,
+                                                                strokeWidth: "3",
+                                                                strokeDasharray: `${progress}, 100`,
+                                                                strokeLinecap: "round"
+                                                            })
+                                                        ),
+                                                        React.createElement('div', { className: "absolute inset-0 flex items-center justify-center" },
+                                                            React.createElement('span', { className: "text-sm font-bold text-gray-700" }, 
+                                                                `${progress}%`
+                                                            )
+                                                        )
+                                                    ),
+                                                    React.createElement('div', { 
+                                                        className: `px-3 py-1 rounded-full text-xs font-bold ${
+                                                            progress === 100 ? 'bg-green-100 text-green-700' :
+                                                            progress > 50 ? 'bg-yellow-100 text-yellow-700' :
+                                                            'bg-red-100 text-red-700'
+                                                        }`
+                                                    },
+                                                        progress === 100 ? '✅ Complete' :
+                                                        progress > 0 ? '🔄 In Progress' : '⏳ Pending'
+                                                    )
+                                                )
+                                            ),
+
+                                            // 공정 체크박스들 - 향상된 디자인
+                                            ...processes.map(process => {
+                                                const processData = data?.processes?.[process.id];
+                                                const isCompleted = processData?.completed || false;
+                                                const completedDate = processData?.completedDate;
+                                                
+                                                return React.createElement('td', { key: process.id, className: "px-4 py-6 text-center" },
+                                                    React.createElement('div', { className: "flex flex-col items-center gap-3" },
+                                                        React.createElement('button', {
+                                                            onClick: () => updateProcessStatus(product.id, process.id, 'completed', !isCompleted),
+                                                            className: `relative w-12 h-12 rounded-2xl transition-all duration-300 ${
+                                                                isCompleted 
+                                                                    ? 'bg-gradient-to-r from-green-400 to-green-500 shadow-lg scale-110' 
+                                                                    : 'bg-gray-200 hover:bg-gray-300 hover:scale-105'
+                                                            }`,
+                                                            title: `${process.fullName} - ${isCompleted ? 'Completed ✅' : 'Click to complete'}`
+                                                        },
+                                                            React.createElement(isCompleted ? CheckCircle : Circle, { 
+                                                                className: `w-6 h-6 ${isCompleted ? 'text-white' : 'text-gray-500'}` 
+                                                            }),
+                                                            isCompleted && React.createElement('div', { 
+                                                                className: "absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center" 
+                                                            },
+                                                                React.createElement(Sparkles, { className: "w-2 h-2 text-yellow-700" })
+                                                            )
+                                                        ),
+                                                        
+                                                        // 완료 날짜
+                                                        isCompleted && React.createElement('input', {
+                                                            type: "date",
+                                                            value: completedDate || '',
+                                                            onChange: (e) => updateProcessStatus(product.id, process.id, 'completedDate', e.target.value),
+                                                            className: "text-xs border-2 border-gray-200 rounded-lg px-2 py-1 w-32 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                                        })
+                                                    )
+                                                );
+                                            }),
+
+                                            // 액션 버튼들 - 현대적 디자인
+                                            React.createElement('td', { className: "px-6 py-6 text-center" },
+                                                React.createElement('div', { className: "flex items-center justify-center gap-3" },
+                                                    React.createElement('button', {
+                                                        onClick: () => editProduct(product),
+                                                        className: "w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:shadow-lg transition-all scale-hover",
+                                                        title: "Edit Product / 제품 편집"
+                                                    },
+                                                        React.createElement(Edit2, { className: "w-5 h-5" })
+                                                    ),
+                                                    React.createElement('button', {
+                                                        onClick: () => setShowDeleteConfirm(product.id),
+                                                        className: "w-10 h-10 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white hover:shadow-lg transition-all scale-hover",
+                                                        title: "Delete Product / 제품 삭제"
+                                                    },
+                                                        React.createElement(Trash2, { className: "w-5 h-5" })
+                                                    )
+                                                )
+                                            )
+                                        );
+                                    })
+                                )
+                            )
+                        )
+                    ),
+
+                    // 검색 결과 없음 - 개선된 디자인
+                    filteredProducts.length === 0 && React.createElement('div', { className: "glass-card-strong rounded-3xl p-12 text-center fade-in" },
+                        React.createElement('div', { className: "text-6xl mb-6 micro-bounce" }, "🔍"),
+                        React.createElement('h3', { className: "text-2xl font-bold text-white mb-4" }, "No products found / 제품을 찾을 수 없습니다"),
+                        React.createElement('p', { className: "text-white/80 text-lg" }, "Try adjusting your search or filters / 검색어나 필터를 조정해보세요")
+                    ),
+
+                    // 모달들 - 현대적 디자인
+                    showAddModal && React.createElement('div', { className: "fixed inset-0 bg-black/50 modal-backdrop flex items-center justify-center z-50 p-4" },
+                        React.createElement('div', { className: "glass-card-strong rounded-3xl p-8 w-full max-w-md modal-content" },
+                            React.createElement('div', { className: "flex items-center justify-between mb-8" },
+                                React.createElement('h2', { className: "text-2xl font-bold text-white" },
+                                    editingProduct ? '✏️ Edit Product' : '✨ Add New Product'
+                                ),
+                                React.createElement('button', {
+                                    onClick: () => setShowAddModal(false),
+                                    className: "w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all"
+                                },
+                                    React.createElement(X, { className: "w-5 h-5 text-white" })
+                                )
+                            ),
+                            
+                            React.createElement('div', { className: "space-y-6" },
+                                React.createElement('input', {
+                                    type: "text",
+                                    placeholder: "Product Name / 제품명",
+                                    value: formData.name,
+                                    onChange: (e) => setFormData(prev => ({ ...prev, name: e.target.value })),
+                                    className: "modern-input w-full px-4 py-3 rounded-xl border-0 focus:ring-2 focus:ring-purple-500"
+                                }),
+                                React.createElement('select', {
+                                    value: formData.category,
+                                    onChange: (e) => setFormData(prev => ({ ...prev, category: e.target.value })),
+                                    className: "modern-input w-full px-4 py-3 rounded-xl border-0 focus:ring-2 focus:ring-purple-500"
+                                },
+                                    React.createElement('option', { value: "earring" }, "💍 Earring / 귀걸이"),
+                                    React.createElement('option', { value: "necklace" }, "📿 Necklace / 목걸이"),
+                                    React.createElement('option', { value: "bracelet" }, "💎 Bracelet / 팔찌"),
+                                    React.createElement('option', { value: "ring" }, "💍 Ring / 반지")
+                                ),
+                                React.createElement('input', {
+                                    type: "text",
+                                    placeholder: "Material (e.g., 14K Gold, Silver 925)",
+                                    value: formData.material,
+                                    onChange: (e) => setFormData(prev => ({ ...prev, material: e.target.value })),
+                                    className: "modern-input w-full px-4 py-3 rounded-xl border-0 focus:ring-2 focus:ring-purple-500"
+                                })
+                            ),
+                            
+                            React.createElement('div', { className: "flex gap-4 mt-8" },
+                                React.createElement('button', {
+                                    onClick: () => setShowAddModal(false),
+                                    className: "flex-1 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium transition-all"
+                                }, "Cancel / 취소"),
+                                React.createElement('button', {
+                                    onClick: editingProduct ? updateProduct : addNewProduct,
+                                    disabled: !formData.name.trim(),
+                                    className: "flex-1 gradient-button px-6 py-3 text-white rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                }, editingProduct ? "✅ Update" : "🚀 Add Product")
+                            )
+                        )
+                    ),
+
+                    // 공유 모달
+                    showShareModal && React.createElement('div', { className: "fixed inset-0 bg-black/50 modal-backdrop flex items-center justify-center z-50 p-4" },
+                        React.createElement('div', { className: "glass-card-strong rounded-3xl p-8 w-full max-w-lg modal-content" },
+                            React.createElement('div', { className: "flex items-center justify-between mb-6" },
+                                React.createElement('h2', { className: "text-2xl font-bold text-white flex items-center gap-3" },
+                                    React.createElement(Share2, { className: "w-8 h-8" }),
+                                    "Share Your Workspace"
+                                ),
+                                React.createElement('button', {
+                                    onClick: () => setShowShareModal(false),
+                                    className: "w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all"
+                                },
+                                    React.createElement(X, { className: "w-5 h-5 text-white" })
+                                )
+                            ),
+                            
+                            React.createElement('div', { className: "space-y-6" },
+                                React.createElement('div', { className: "flex gap-3" },
+                                    React.createElement('input', {
+                                        type: "text",
+                                        value: shareUrl,
+                                        readOnly: true,
+                                        className: "flex-1 px-4 py-3 bg-white/90 border-0 rounded-xl text-gray-700 font-mono text-sm"
+                                    }),
+                                    React.createElement('button', {
+                                        onClick: () => copyToClipboard(shareUrl),
+                                        className: "gradient-button px-6 py-3 text-white rounded-xl font-medium flex items-center gap-2 hover:shadow-lg"
+                                    },
+                                        React.createElement(Link, { className: "w-5 h-5" }),
+                                        "Copy"
+                                    )
+                                ),
+                                
+                                React.createElement('div', { className: "glass-card rounded-2xl p-6" },
+                                    React.createElement('h3', { className: "font-bold text-white mb-4 flex items-center gap-2" },
+                                        React.createElement(Zap, { className: "w-5 h-5" }),
+                                        "How it works / 작동 방식"
+                                    ),
+                                    React.createElement('ul', { className: "text-white/80 space-y-2 text-sm" },
+                                        React.createElement('li', null, "🔗 URL contains all your data / URL에 모든 데이터 포함"),
+                                        React.createElement('li', null, "📱 Works on any device / 모든 기기에서 작동"),
+                                        React.createElement('li', null, "🚀 No account needed / 계정 필요 없음"),
+                                        React.createElement('li', null, "💾 Auto-syncs when shared / 공유 시 자동 동기화")
+                                    )
+                                )
+                            )
+                        )
+                    ),
+
+                    // 삭제 확인 모달
+                    showDeleteConfirm && React.createElement('div', { className: "fixed inset-0 bg-black/50 modal-backdrop flex items-center justify-center z-50 p-4" },
+                        React.createElement('div', { className: "glass-card-strong rounded-3xl p-8 w-full max-w-md modal-content" },
+                            React.createElement('div', { className: "text-center mb-8" },
+                                React.createElement('div', { className: "w-20 h-20 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6" },
+                                    React.createElement(Trash2, { className: "w-10 h-10 text-white" })
+                                ),
+                                React.createElement('h2', { className: "text-2xl font-bold text-white mb-4" }, "Delete Product?"),
+                                React.createElement('p', { className: "text-white/80 text-lg" }, 
+                                    `Delete "${products.find(p => p.id === showDeleteConfirm)?.name}"?`
+                                ),
+                                React.createElement('p', { className: "text-white/60 text-sm mt-2" }, 
+                                    "This action cannot be undone / 이 작업은 되돌릴 수 없습니다"
+                                )
+                            ),
+                            
+                            React.createElement('div', { className: "flex gap-4" },
+                                React.createElement('button', {
+                                    onClick: () => setShowDeleteConfirm(null),
+                                    className: "flex-1 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium transition-all"
+                                }, "Cancel / 취소"),
+                                React.createElement('button', {
+                                    onClick: () => executeDeleteProduct(showDeleteConfirm),
+                                    className: "flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:shadow-lg text-white rounded-xl font-medium transition-all"
+                                }, "🗑️ Delete")
+                            )
+                        )
+                    ),
+
+                    // 플로팅 액션 버튼
+                    React.createElement('button', {
+                        onClick: () => setShowAddModal(true),
+                        className: "floating-button",
+                        title: "Quick Add Product / 빠른 제품 추가"
+                    },
+                        React.createElement(Plus, { className: "w-6 h-6 text-white" })
+                    )
+                )
+            );
+        };
+
+        // 앱 렌더링
+        ReactDOM.render(React.createElement(JewelryProductionTracker), document.getElementById('root'));
+    </script>
+</body>
+</html>
