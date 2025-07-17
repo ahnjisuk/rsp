@@ -6,8 +6,7 @@
     <title>💎 Jewelry Production Tracker</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.25.6/babel.min.js"></script>
-    <script src="https://unpkg.com/lucide-react@0.441.0/dist/umd/lucide-react.min.js"></script>
+    <script src="https://cdn personally.cloudflare.com/ajax/libs/babel-standalone/7.25.6/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,7 +45,7 @@
             box-shadow: var(--shadow-soft); 
         }
         .glass-card-strong { 
-            background: rgba(255, 255, 255, 0.15); 
+            background: rgbaon rgba(255, 255, 255, 0.15); 
             backdrop-filter: var(--backdrop-blur); 
             -webkit-backdrop-filter: var(--backdrop-blur); 
             border: 1px solid rgba(255, 255, 255, 0.3); 
@@ -143,6 +142,8 @@
             to { transform: translateX(0); opacity: 1; } 
         }
         .loading-spinner { 
+            width
+        .loading-spinner { 
             width: 40px; 
             height: 40px; 
             border: 4px solid rgba(102, 126, 234, 0.1); 
@@ -200,8 +201,7 @@
     <div id="root"></div>
     <script type="text/babel">
         const { useState, useEffect, useCallback, useMemo } = React;
-        const { Camera, FileText, Calendar, CheckCircle, Circle, Upload, Download, Search, Filter, Edit2, Plus, Save, X, Trash2, Share2, Link, AlertCircle, CheckCircle2, BarChart3, TrendingUp, Clock, Users, Sparkles, Zap, Heart, Star } = window.LucideReact;
-        
+
         const JewelryProductionTracker = () => {
             const processes = [
                 { id: 'cad', name: 'CAD\n캐드', icon: '🖥️', fullName: 'Computer-Aided Design' },
@@ -246,8 +246,6 @@
             const [showAddModal, setShowAddModal] = useState(false);
             const [editingProduct, setEditingProduct] = useState(null);
             const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
-            const [showShareModal, setShowShareModal] = useState(false);
-            const [shareUrl, setShareUrl] = useState('');
             const [notification, setNotification] = useState(null);
             const [isLoading, setIsLoading] = useState(false);
             const [autoSaveStatus, setAutoSaveStatus] = useState('saved');
@@ -305,15 +303,6 @@
                 const averageProgress = totalProducts > 0 ? Math.round(products.reduce((sum, p) => sum + calculateProgress(p.id), 0) / totalProducts) : 0;
                 return { totalProducts, completedProducts, inProgressProducts, averageProgress };
             }, [products, calculateProgress]);
-
-            const copyToClipboard = useCallback(async (text) => {
-                try {
-                    await navigator.clipboard.writeText(text);
-                    showNotification('📋 URL copied to clipboard!');
-                } catch (error) {
-                    showNotification('Failed to copy URL.', 'error');
-                }
-            }, [showNotification]);
 
             const updateProcessStatus = useCallback((productId, processId, field, value) => {
                 setProductionData(prev => ({
@@ -390,15 +379,13 @@
                         }` 
                     }, 
                         React.createElement('div', { className: "flex items-center gap-3" }, 
-                            React.createElement(notification.type === 'error' ? AlertCircle : CheckCircle2, { className: "w-6 h-6" }),
+                            React.createElement('span', { className: "text-2xl" }, notification.type === 'error' ? '⚠️' : '✅'),
                             React.createElement('p', null, notification.message)
                         )
                     ),
                     React.createElement('div', { className: "glass-card-strong rounded-3xl p-8 mb-8" },
                         React.createElement('div', { className: "flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6" },
-                            React.createElement('div', { className: "flex items to be continued...
-
-System: -center gap-4" }, 
+                            React.createElement('div', { className: "flex items-center gap-4" }, 
                                 React.createElement('div', { className: "w-16 h-16 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-2xl micro-bounce" }, "💎"),
                                 React.createElement('div', null, 
                                     React.createElement('h1', { className: "text-4xl font-bold text-white mb-2 gradient-text" }, "Jewelry Production Tracker"),
@@ -407,7 +394,7 @@ System: -center gap-4" },
                             ),
                             React.createElement('div', { className: "flex items-center gap-3" },
                                 React.createElement('div', { className: "relative" }, 
-                                    React.createElement(Search, { className: "absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" }),
+                                    React.createElement('span', { className: "absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-2xl" }, "🔍"),
                                     React.createElement('input', { 
                                         type: "text", 
                                         placeholder: "Search...", 
@@ -417,7 +404,7 @@ System: -center gap-4" },
                                     })
                                 ),
                                 React.createElement('div', { className: "relative" }, 
-                                    React.createElement(Filter, { className: "absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" }),
+                                    React.createElement('span', { className: "absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-2xl" }, "📂"),
                                     React.createElement('select', { 
                                         value: filterCategory, 
                                         onChange: (e) => setFilterCategory(e.target.value), 
@@ -433,28 +420,28 @@ System: -center gap-4" },
                         React.createElement('div', { className: "stat-card rounded-2xl p-6 scale-hover" }, 
                             React.createElement('div', { className: "flex items-center justify-between mb-2" }, 
                                 React.createElement('p', { className: "text-white/80 font-medium" }, "Total Products"),
-                                React.createElement(Users, { className: "w-6 h-6 text-white/50" })
+                                React.createElement('span', { className: "text-2xl text-white/50" }, "👥")
                             ),
                             React.createElement('p', { className: "text-3xl font-bold text-white" }, statistics.totalProducts)
                         ),
                         React.createElement('div', { className: "stat-card rounded-2xl p-6 scale-hover" }, 
                             React.createElement('div', { className: "flex items-center justify-between mb-2" }, 
                                 React.createElement('p', { className: "text-white/80 font-medium" }, "Completed"),
-                                React.createElement(CheckCircle2, { className: "w-6 h-6 text-white/50" })
+                                React.createElement('span', { className: "text-2xl text-white/50" }, "✅")
                             ),
                             React.createElement('p', { className: "text-3xl font-bold text-white" }, statistics.completedProducts)
                         ),
                         React.createElement('div', { className: "stat-card rounded-2xl p-6 scale-hover" }, 
                             React.createElement('div', { className: "flex items-center justify-between mb-2" }, 
                                 React.createElement('p', { className: "text-white/80 font-medium" }, "In Progress"),
-                                React.createElement(Clock, { className: "w-6 h-6 text-white/50" })
+                                React.createElement('span', { className: "text-2xl text-white/50" }, "⏰")
                             ),
                             React.createElement('p', { className: "text-3xl font-bold text-white" }, statistics.inProgressProducts)
                         ),
                         React.createElement('div', { className: "stat-card rounded-2xl p-6 scale-hover" }, 
                             React.createElement('div', { className: "flex items-center justify-between mb-2" }, 
                                 React.createElement('p', { className: "text-white/80 font-medium" }, "Avg. Progress"),
-                                React.createElement(TrendingUp, { className: "w-6 h-6 text-white/50" })
+                                React.createElement('span', { className: "text-2xl text-white/50" }, "📈")
                             ),
                             React.createElement('p', { className: "text-3xl font-bold text-white" }, `${statistics.averageProgress}%`)
                         )
@@ -507,7 +494,7 @@ System: -center gap-4" },
                                                             data?.processes?.[process.id]?.completed ? 'bg-green-500' : 'bg-white/20 hover:bg-white/30'
                                                         }` 
                                                     }, 
-                                                        React.createElement(data?.processes?.[process.id]?.completed ? CheckCircle : Circle, { className: "w-5 h-5" })
+                                                        React.createElement('span', { className: "text-2xl" }, data?.processes?.[process.id]?.completed ? '✅' : '⚪')
                                                     )
                                                 )
                                             ),
@@ -521,13 +508,13 @@ System: -center gap-4" },
                                                         }, 
                                                         className: "p-2 rounded-full hover:bg-white/20" 
                                                     }, 
-                                                        React.createElement(Edit2, { className: "w-5 h-5" })
+                                                        React.createElement('span', { className: "text-2xl" }, "✏️")
                                                     ),
                                                     React.createElement('button', { 
                                                         onClick: () => setShowDeleteConfirm(product.id), 
                                                         className: "p-2 rounded-full hover:bg-white/20" 
                                                     }, 
-                                                        React.createElement(Trash2, { className: "w-5 h-5" })
+                                                        React.createElement('span', { className: "text-2xl" }, "🗑️")
                                                     )
                                                 )
                                             )
@@ -546,7 +533,7 @@ System: -center gap-4" },
                         }, 
                         className: "floating-button" 
                     }, 
-                        React.createElement(Plus, { className: "w-6 h-6 text-white" })
+                        React.createElement('span', { className: "text-2xl text-white" }, "➕")
                     ),
                     (showAddModal || showDeleteConfirm) && React.createElement('div', { className: "fixed inset-0 bg-black/50 modal-backdrop flex items-center justify-center z-50 p-4" },
                         showAddModal && React.createElement('div', { className: "glass-card-strong rounded-2xl p-8 w-full max-w-md modal-content" },
@@ -590,7 +577,7 @@ System: -center gap-4" },
                         ),
                         showDeleteConfirm && React.createElement('div', { className: "glass-card-strong rounded-2xl p-8 w-full max-w-md modal-content text-center" },
                             React.createElement('div', { className: "w-16 h-16 bg-red-500/50 rounded-full flex items-center justify-center mx-auto mb-6" }, 
-                                React.createElement(Trash2, { className: "w-8 h-8 text-white" })
+                                React.createElement('span', { className: "text-2xl text-white" }, "🗑️")
                             ),
                             React.createElement('h2', { className: "text-2xl font-bold text-white mb-4" }, "Delete Product?"),
                             React.createElement('p', { className: "text-white/80" }, `Are you sure you want to delete "${products.find(p => p.id === showDeleteConfirm)?.name}"? This cannot be undone.`),
